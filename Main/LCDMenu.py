@@ -113,5 +113,8 @@ class LCDMenu:
             time.sleep(0.1)
         self.print_lcd("Submitted", "")
         time.sleep(.25)
-        return self.selected_text
+        if use_numbers == None:
+            return self.selected_text
+        else:
+            return int(self.selected_text)
 
