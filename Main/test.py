@@ -28,14 +28,14 @@ def continuous_scan_thread(sector, block, results, stop_event):
     
 if __name__ == "__main__":
     # Set menu parameters and run for sector input
-    ##selected_sector = menu.run("Sector:", 2, True)
+    #selected_sector = menu.run("Sector:", 2, True)
     selected_sector=1
 
     # Set menu parameters and run for block input
-    ##selected_block = menu.run("Block:", 2, True)
+    #selected_block = menu.run("Block:", 2, True)
     selected_block =1
     # Set menu parameters and run for auth input
-    ##selected_auth = menu.run("Auth:", 3, True)
+    #selected_auth = menu.run("Auth:", 3, True)
     selected_auth =255
 
     # Print selected inputs
@@ -44,15 +44,13 @@ if __name__ == "__main__":
     print(f"Selected Auth: {selected_auth}")
 
     # Continuous scanning and printing results
+
 while True:
-                print("This is the main loop")
-                stop_thread.clear()
-                scan_thread = threading.Thread(target=continuous_scan_thread, args=(selected_sector, selected_block, scan_results, stop_thread))
-                scan_thread.start()
-                scan_thread.join()  # Wait for the scanning thread to complete
-
-        # Use the scan results
-                if scan_results["uid"] is not None and scan_results["value"] is not None:
-                        print(f"UID: {scan_results['uid']} / Value: {scan_results['value']}")
-
-                time.sleep(1)  # Sleep before starting the next scan
+        print("This is the main loop")
+        try:
+            for uid,val in scanner.continuous_scan(sector=int(selected_sector), block=int(selected_block)):
+                print(f"UID: {uid} val {val}")
+                time.sleep(1)
+        except Exception as e:
+            print(f"An error occurred: {e}")
+            time.sleep(1)

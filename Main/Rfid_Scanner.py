@@ -36,11 +36,9 @@ class Rfid_Scanner:
         return val    
 
     def scan_tag(self, sector, block, valuetowrite=None, byte=0, write=False):
-        print("scanning")
         value=0
         totalblock = self.sectorblock_to_block(sector, block)
         status, _ = self.MIFAREReader.MFRC522_Request(self.MIFAREReader.PICC_REQIDL)
-        print(status)
         if status == self.MIFAREReader.MI_OK:
             print("card detected")
             status, uid = self.MIFAREReader.MFRC522_Anticoll()
@@ -58,19 +56,20 @@ class Rfid_Scanner:
                         if write:
                             print("write Good!")
                             self.write_data(totalblock, valuetowrite)
-                            print("Rfid Library vals")
-                            print(uid)
-                            print(value)
-                        return uid_str, value
+                        print("stopping Cryptooooo")
+                        self.MIFAREReader.MFRC522_StopCrypto1()
+                        return uid_str, int(value)
             self.MIFAREReader.MFRC522_StopCrypto1()
         return None, None
 
     def continuous_scan(self, sector, block, valuetowrite=None, byte=0, write=False):
         while True:
             uid, value = self.scan_tag(sector, block, valuetowrite, byte, write)
-            if uid is not None:
+            if uid is not None and value is not None:
                 print("Rfid Library vals")
                 print(uid)
+                print(type(value))
                 print(value)
-                return uid, value
+                yield uid, value
+                return
             time.sleep(.1)  # Brief sleep to avoid busy looping
